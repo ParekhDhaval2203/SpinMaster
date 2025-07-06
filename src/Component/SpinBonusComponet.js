@@ -1,29 +1,28 @@
 import React from 'react';
 import {
-    View, Text, Image, StyleSheet,
-    TouchableOpacity, StatusBar, Dimensions,
-    ScrollView
+    Dimensions,
+    ScrollView,
+    StatusBar,
+    StyleSheet,
+    View
 } from 'react-native';
-import Feather from 'react-native-vector-icons/Feather';
 import Header from './HeaderComponent';
 import SpinBonusCard from './SpinBonusCard';
-import { Button } from 'react-native-elements';
 
-// Get screen width/height
 const { width, height } = Dimensions.get('window');
 
 export default function SpinBonusComponet(props) {
     const { navigation } = props;
 
-    const onPress = () => {
-        navigation.navigate('SpinBonus')
-    };
-
-    const bonusData = Array(5).fill({
+    const bonusData = [{
         title: '100 Spin Bonus',
         subtitle: 'Collect 100 Spin Bonus',
         dateTime: new Date(),
-    });
+    }, {
+        title: '50 Spin Bonus',
+        subtitle: 'Collect 50 Spin Bonus',
+        dateTime: new Date(),
+    }]
 
     return (
         <View style={styles.container}>
@@ -39,17 +38,11 @@ export default function SpinBonusComponet(props) {
                             title={item.title}
                             subtitle={item.subtitle}
                             dateTime={item.dateTime}
+                            navigation={navigation}
                         />
                     ))}
                 </View>
             </ScrollView>
-
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Button
-                    title="Go to Offer Details"
-                    onPress={() => navigation.navigate('OfferDetails')}
-                />
-            </View>
         </View>
     );
 }

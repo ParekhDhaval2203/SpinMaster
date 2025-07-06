@@ -1,59 +1,20 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {
-    View, Text, Image, StatusBar,
-    StyleSheet, TouchableOpacity,
-    FlatList, Button
+    Image, StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import Header from './HeaderComponent';
-import formatDateTime from '../utils/DateTime';
 import LinearGradient from 'react-native-linear-gradient';
+import Header from './HeaderComponent';
 
-export default function OfferDetailsScreen() {
+export default function OfferDetailsScreen(props) {
+    const { route } = props;
+    const { title, subtitle, dateTime } = route.params;
+
     const navigation = useNavigation();
-
-    const offers = [
-        {
-            id: '1',
-            title: '100 Spin Bonus',
-            subtitle: 'Collect 100 Spin Bonus',
-            date: new Date(),
-        },
-        {
-            id: '2',
-            title: '50 Coin Reward',
-            subtitle: 'Claim your 50 bonus coins now!',
-            date: new Date(),
-        },
-    ];
-
-    const renderOffer = ({ item }) => (
-        <View style={styles.card}>
-            <View style={styles.imageContainer}>
-                <Image
-                    source={require('../assets/OfferDetails.png')}
-                    style={styles.image}
-                />
-            </View>
-
-            <View style={styles.detailsContainer}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Text style={styles.subtitle}>{item.subtitle}</Text>
-                <Text style={styles.time}>{formatDateTime(item.date)}</Text>
-                <TouchableOpacity>
-                    <LinearGradient
-                        colors={['#4facfe', '#1976f2']}
-
-                        style={styles.gradientButton}
-                    >
-                        <Text style={styles.buttonText}>Claim Now</Text>
-                    </LinearGradient>
-                </TouchableOpacity>
-
-            </View>
-        </View>
-    );
-
 
     return (
         <View style={styles.container}>
@@ -61,18 +22,29 @@ export default function OfferDetailsScreen() {
 
             <Header title='Offer Details' />
 
-            <FlatList
-                data={offers}
-                keyExtractor={(item) => item.id}
-                renderItem={renderOffer}
-                contentContainerStyle={{ padding: 16 }}
-            />
+            <View style={styles.card}>
+                <View style={styles.imageContainer}>
+                    <Image
+                        source={require('../assets/OfferDetails.png')}
+                        style={styles.image}
+                    />
+                </View>
 
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Button
-                    title="Settings"
-                    onPress={() => navigation.navigate('Settings')}
-                />
+                <View style={styles.detailsContainer}>
+                    <Text style={styles.title}>{title}</Text>
+                    <Text style={styles.subtitle}>{subtitle}</Text>
+                    <Text style={styles.time}>{dateTime}</Text>
+                    <TouchableOpacity>
+                        <LinearGradient
+                            colors={['#4facfe', '#1976f2']}
+
+                            style={styles.gradientButton}
+                        >
+                            <Text style={styles.buttonText}>Claim Now</Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+
+                </View>
             </View>
         </View>
     );
@@ -108,7 +80,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 20,
         overflow: 'hidden',
-        marginBottom: 20,
+        marginTop: '5%',
+        marginHorizontal: '5%',
         shadowColor: '#000',
         shadowOpacity: 0.05,
         shadowOffset: { width: 0, height: 2 },

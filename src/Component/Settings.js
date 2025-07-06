@@ -1,23 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-    View,
-    Text,
-    StyleSheet,
     FlatList,
-    TouchableOpacity,
-    Image,
     StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import AppRatingModal from './AppRatingModal';
 import Header from './HeaderComponent';
 
 export default function SettingScreen() {
+    const [showModal, setShowModal] = useState(false);
+
+    const onRatingClick = () => {
+        setShowModal(true);
+    };
+
     const infoOptions = [{
         id: '1',
         title: 'Rate this app',
         icon: 'star-rate',
         iconLib: 'MaterialIcons',
+        onClick: onRatingClick,
     }, {
         id: '2',
         title: 'Privacy Policy',
@@ -40,8 +47,8 @@ export default function SettingScreen() {
             item.iconLib === 'Ionicons' ? Ionicons : MaterialIcons;
 
         return (
-            <TouchableOpacity style={styles.card}>
-                <View style={styles.iconWrapper}>
+            <TouchableOpacity style={styles.card} onPress={item.onClick}>
+                <View style={styles.iconWrapper} >
                     <IconComponent name={item.icon} size={24} color="#1976f2" />
                 </View>
                 <Text style={styles.text}>{item.title}</Text>
@@ -60,6 +67,7 @@ export default function SettingScreen() {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ padding: 16 }}
             />
+            <AppRatingModal visible={showModal} onClose={() => setShowModal(false)} />
         </View>
     );
 };

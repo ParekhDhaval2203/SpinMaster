@@ -1,12 +1,16 @@
 import React from 'react';
 import {
-    View, Text, Image, StyleSheet,
-    TouchableOpacity, StatusBar, Dimensions
+    Dimensions,
+    Image,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Header from './HeaderComponent';
 
-// Get screen width/height
 const { width, height } = Dimensions.get('window');
 
 export default function HomeComponent(props) {
@@ -20,10 +24,10 @@ export default function HomeComponent(props) {
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#1E68FF" />
 
-            <Header title='Coin Master' />
+            <Header title='Coin Master' isHideBack />
 
             {/* Main Card */}
-            <View style={styles.mainCard}>
+            <TouchableOpacity style={styles.mainCard} onPress={onPress}>
                 <View style={styles.imageWrapper}>
                     <Image
                         source={require('../assets/Spin&Coin.png')}
@@ -32,7 +36,7 @@ export default function HomeComponent(props) {
                     />
                 </View>
                 <Text style={styles.cardTitle}>Spin & Coin Reward</Text>
-            </View>
+            </TouchableOpacity>
 
             {/* Bottom Buttons */}
             <View style={styles.buttonRow}>
@@ -43,17 +47,13 @@ export default function HomeComponent(props) {
                     <Text style={styles.buttonText}>Invite Friends</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.cardButton}>
+                <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('Settings')}>
                     <View style={styles.iconWrapper}>
                         <Feather name="settings" size={24} color="#FFFFFF" />
                     </View>
                     <Text style={styles.buttonText}>Settings</Text>
                 </TouchableOpacity>
             </View>
-
-            <TouchableOpacity style={styles.button} onPress={onPress}>
-                <Text style={styles.label}>Spin Bonus</Text>
-            </TouchableOpacity>
         </View>
     );
 }

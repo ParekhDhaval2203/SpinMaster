@@ -1,4 +1,5 @@
-import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import {
     Text,
     View,
@@ -7,12 +8,19 @@ import {
     TouchableOpacity,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-// import { Ionicons } from '@expo/vector-icons'; // optional, or use any back icon
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { getDeviceId } from '../utils/getDeviceId';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Header(props) {
-    const { title, onBack } = props;
+    const { title, isHideBack = false } = props;
+    const navigation = useNavigation();
+    const [deviceID, setDeviceID] = useState('');
+
+    useEffect(() => {
+        setDeviceID(getDeviceId())
+    }, []);
 
     return (
         <LinearGradient
@@ -22,13 +30,16 @@ export default function Header(props) {
             style={styles.header}
         >
             <View style={styles.row}>
-                {/* {onBack && (
-                    <TouchableOpacity onPress={onBack}>
-                        <Ionicons name="arrow-back" size={24} color="white" />
-                    </TouchableOpacity>
-                )} */}
-                <Text style={styles.headerText}>{title}</Text>
-                <View style={{ width: 24 }} /> {/* Placeholder for spacing */}
+                <Text>{deviceID}</Text>
+                {
+                    isHideBack ?
+                        <Text style={styles.headerText}>{title}</Text>
+                        :
+                        <TouchableOpacity style={styles.backRow} onPress={() => navigation.goBack()}>
+                            <Ionicons name="arrow-back" size={24} color="#fff" />
+                            <Text style={styles.headerText}>{title}</Text>
+                        </TouchableOpacity>
+                }
             </View>
         </LinearGradient>
     );
@@ -45,11 +56,15 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
+    },
+    backRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     headerText: {
         color: 'white',
         fontSize: width * 0.06,
         fontWeight: 'bold',
+        marginLeft: 6
     },
 });

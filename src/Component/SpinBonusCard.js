@@ -1,13 +1,22 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import formatDateTime from '../utils/DateTime';
 
-export default function SpinBonusCard({ title, subtitle, dateTime }) {
+export default function SpinBonusCard(props) {
+    const { navigation, title, subtitle, dateTime } = props;
+
     return (
-        <View style={styles.card}>
+        <TouchableOpacity style={styles.card}
+            onPress={() => {
+                navigation.navigate('OfferDetails', {
+                    title: title,
+                    subtitle: subtitle,
+                    dateTime: formatDateTime(dateTime)
+                })
+            }}>
             <View style={styles.imageWrapper}>
                 <Image
-                    source={require('../assets/Spin&Coin.png')} // ✅ replace with your asset
+                    source={require('../assets/Spin&Coin.png')}
                     style={styles.image}
                     resizeMode="contain"
                 />
@@ -17,7 +26,7 @@ export default function SpinBonusCard({ title, subtitle, dateTime }) {
                 <Text style={styles.subtitle}>{subtitle}</Text>
                 <Text style={styles.dateTime}>{formatDateTime(dateTime)}</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 }
 
