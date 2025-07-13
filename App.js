@@ -7,6 +7,7 @@ import SettingScreen from './src/Component/Settings';
 import SpinBonusComponet from './src/Component/SpinBonusComponet';
 import mobileAds, { MaxAdContentRating } from 'react-native-google-mobile-ads';
 import { useEffect, useState } from 'react';
+import SplashScreen from './src/Component/SplashScreen';
 // import firebase from '@react-native-firebase/app';
 
 const Stack = createNativeStackNavigator();
@@ -39,7 +40,10 @@ function App() {
 
 	return (
 		<NavigationContainer>
-			<Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+			<Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
+				<Stack.Screen name="SplashScreen">
+					{props => <SplashScreen {...props} adsInitialized={adsInitialized} />}
+				</Stack.Screen>
 				<Stack.Screen name="Home">
 					{props => <HomeComponent {...props} adsInitialized={adsInitialized} />}
 				</Stack.Screen>

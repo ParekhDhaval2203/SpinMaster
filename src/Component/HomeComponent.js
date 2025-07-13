@@ -11,9 +11,7 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Header from './HeaderComponent';
-import NativeAdComponent from './NativeAdComponent';
 import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
-import { useState } from 'react';
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,7 +28,6 @@ export default function HomeComponent(props) {
                 <StatusBar barStyle="light-content" backgroundColor="#1E68FF" />
 
                 <Header title='Coin Master' isHideBack />
-                <NativeAdComponent adsInitialized={adsInitialized} />
                 {/* Main Card */}
                 <TouchableOpacity style={styles.mainCard} onPress={onPress}>
                     <View style={styles.imageWrapper}>
@@ -72,27 +69,6 @@ export default function HomeComponent(props) {
         </>
     );
 }
-
-const NativeComponent = () => {
-    const [nativeAd, setNativeAd] = useState(adsInitialized);
-
-    useEffect(() => {
-        NativeAd.createForAdRequest(TestIds.NATIVE)
-            .then(setNativeAd)
-            .catch(console.error);
-    }, []);
-
-    if (!nativeAd) {
-        return null;
-    }
-
-    return (
-        <NativeAdView nativeAd={nativeAd}>
-            <Text style={styles.buttonText}>Settings</Text>
-        </NativeAdView>
-    );
-};
-
 
 const styles = StyleSheet.create({
     container: {
