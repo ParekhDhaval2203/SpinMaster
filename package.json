@@ -15,6 +15,7 @@
     "@react-navigation/native-stack": "^7.3.21",
     "react": "19.1.0",
     "react-native": "0.80.1",
+    "react-native-admob-native-ads": "^0.7.6",
     "react-native-bootsplash": "^6.3.9",
     "react-native-device-info": "^14.0.4",
     "react-native-elements": "^3.4.3",

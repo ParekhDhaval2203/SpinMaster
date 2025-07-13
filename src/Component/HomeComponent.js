@@ -1,62 +1,98 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
+    Alert,
     Dimensions,
     Image,
     StatusBar,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import Header from './HeaderComponent';
+import NativeAdComponent from './NativeAdComponent';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
+import { useState } from 'react';
 
 const { width, height } = Dimensions.get('window');
 
 export default function HomeComponent(props) {
-    const { navigation } = props;
+    const { navigation, adsInitialized } = props;
 
     const onPress = () => {
         navigation.navigate('SpinBonus');
     };
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#1E68FF" />
+        <>
+            <View style={styles.container}>
+                <StatusBar barStyle="light-content" backgroundColor="#1E68FF" />
 
-            <Header title='Coin Master' isHideBack />
+                <Header title='Coin Master' isHideBack />
+                <NativeAdComponent adsInitialized={adsInitialized} />
+                {/* Main Card */}
+                <TouchableOpacity style={styles.mainCard} onPress={onPress}>
+                    <View style={styles.imageWrapper}>
+                        <Image
+                            source={require('../assets/Spin&Coin.png')}
+                            style={styles.mainImage}
+                            resizeMode="contain"
+                        />
+                    </View>
+                    <Text style={styles.cardTitle}>Spin & Coin Reward</Text>
+                </TouchableOpacity>
 
-            {/* Main Card */}
-            <TouchableOpacity style={styles.mainCard} onPress={onPress}>
-                <View style={styles.imageWrapper}>
-                    <Image
-                        source={require('../assets/Spin&Coin.png')}
-                        style={styles.mainImage}
-                        resizeMode="contain"
-                    />
+                {/* Bottom Buttons */}
+                <View style={styles.buttonRow}>
+                    <TouchableOpacity style={styles.cardButton}>
+                        <View style={styles.iconWrapper}>
+                            <Feather name="user-plus" size={24} color="#FFFFFF" />
+                        </View>
+                        <Text style={styles.buttonText}>Invite Friends</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('Settings')}>
+                        <View style={styles.iconWrapper}>
+                            <Feather name="settings" size={24} color="#FFFFFF" />
+                        </View>
+                        <Text style={styles.buttonText}>Settings</Text>
+                    </TouchableOpacity>
                 </View>
-                <Text style={styles.cardTitle}>Spin & Coin Reward</Text>
-            </TouchableOpacity>
+                <BannerAd
+                    unitId={TestIds.BANNER}
+                    size={BannerAdSize.FULL_BANNER}
+                />
 
-            {/* Bottom Buttons */}
-            <View style={styles.buttonRow}>
-                <TouchableOpacity style={styles.cardButton}>
-                    <View style={styles.iconWrapper}>
-                        <Feather name="user-plus" size={24} color="#FFFFFF" />
-                    </View>
-                    <Text style={styles.buttonText}>Invite Friends</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('Settings')}>
-                    <View style={styles.iconWrapper}>
-                        <Feather name="settings" size={24} color="#FFFFFF" />
-                    </View>
-                    <Text style={styles.buttonText}>Settings</Text>
-                </TouchableOpacity>
             </View>
-        </View>
+            <BannerAd
+                unitId={TestIds.BANNER}
+                size={BannerAdSize.FULL_BANNER}
+            />
+        </>
     );
 }
+
+const NativeComponent = () => {
+    const [nativeAd, setNativeAd] = useState(adsInitialized);
+
+    useEffect(() => {
+        NativeAd.createForAdRequest(TestIds.NATIVE)
+            .then(setNativeAd)
+            .catch(console.error);
+    }, []);
+
+    if (!nativeAd) {
+        return null;
+    }
+
+    return (
+        <NativeAdView nativeAd={nativeAd}>
+            <Text style={styles.buttonText}>Settings</Text>
+        </NativeAdView>
+    );
+};
+
 
 const styles = StyleSheet.create({
     container: {

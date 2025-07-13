@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "540396704560",
+    "project_id": "spinmaster-2203",
+    "storage_bucket": "spinmaster-2203.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:540396704560:android:15b1f28ddd6371814d6ef5",
+        "android_client_info": {
+          "package_name": "com.spinmaster"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKp6--RmbcpnlyBMlX2B51C0VTQTj6qso"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
