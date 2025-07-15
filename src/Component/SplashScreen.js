@@ -6,10 +6,9 @@ import {
     Dimensions,
     StatusBar,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
-const NUM_LINES = 30; // Number of rays
+const NUM_RAYS = 60;
 
 export default function SplashScreen({ navigation }) {
     useEffect(() => {
@@ -19,80 +18,78 @@ export default function SplashScreen({ navigation }) {
         return () => clearTimeout(timer);
     }, [navigation]);
 
-    const renderBurstLines = () => {
-        const lines = [];
-        for (let i = 0; i < NUM_LINES; i++) {
-            const rotate = (360 / NUM_LINES) * i;
-            lines.push(
-                <LinearGradient
+    const renderRays = () => {
+        const rays = [];
+        for (let i = 0; i < NUM_RAYS; i++) {
+            const rotate = (360 / NUM_RAYS) * i;
+            rays.push(
+                <View
                     key={i}
-                    colors={['rgba(135, 206, 235, 0.6)', 'rgba(135, 206, 235, 0.3)', 'transparent']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }}
                     style={[
-                        styles.line,
+                        styles.ray,
                         {
                             transform: [
                                 { rotate: `${rotate}deg` },
-                                { translateY: -height * 0.25 }, // moves line outward from center
+                                { translateY: -height * 0.25 },
                             ],
                         },
                     ]}
                 />
             );
         }
-        return lines;
+        return rays;
     };
 
     return (
         <View style={styles.container}>
-            <StatusBar hidden />
+            <View style={styles.raysContainer}>{renderRays()}</View>
 
-            <View style={styles.burstContainer}>{renderBurstLines()}</View>
-
-            {/* Centered logo card */}
-            <View style={styles.logoContainer}>
+            <View style={styles.logoCard}>
                 <Image
-                    source={require('../assets/Spin&Coin.jpg')}
+                    source={require('../assets/Spin&Coin.jpg')} // <-- Replace with your image
                     style={styles.logo}
                 />
             </View>
         </View>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#3b82f6',
+        backgroundColor: '#2189ff',
         alignItems: 'center',
         justifyContent: 'center',
     },
-    burstContainer: {
+    raysContainer: {
         ...StyleSheet.absoluteFillObject,
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
     },
-    line: {
+    ray: {
         position: 'absolute',
         width: 2,
-        height: height * 0.7,
-        borderRadius: 4,
+        height: height * 0.5,
+        backgroundColor: 'rgba(255,255,255,0.3)',
+        borderRadius: 2,
+        transform: [{ scaleX: 1 }], // You can scale X here if you want taper
     },
-    logoContainer: {
+    logoCard: {
         backgroundColor: 'white',
+        padding: 5,
         borderRadius: 24,
-        padding: 8,
+        borderWidth: 2,
+        borderColor: '#fff',
+        elevation: 10,
         shadowColor: '#000',
-        shadowOpacity: 0.3,
-        shadowRadius: 15,
-        shadowOffset: { width: 0, height: 8 },
-        elevation: 15,
+        shadowOpacity: 0.2,
+        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 5 },
         zIndex: 10,
     },
     logo: {
-        width: 120,
-        height: 120,
+        width: 100,
+        height: 100,
         resizeMode: 'contain',
     },
 });

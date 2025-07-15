@@ -1,22 +1,21 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
-    Alert,
     Dimensions,
     Image,
     StatusBar,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
+    View
 } from 'react-native';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import Feather from 'react-native-vector-icons/Feather';
 import Header from './HeaderComponent';
-import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 
 const { width, height } = Dimensions.get('window');
 
 export default function HomeComponent(props) {
-    const { navigation, adsInitialized } = props;
+    const { navigation } = props;
 
     const onPress = () => {
         navigation.navigate('SpinBonus');
@@ -32,7 +31,7 @@ export default function HomeComponent(props) {
                 <TouchableOpacity style={styles.mainCard} onPress={onPress}>
                     <View style={styles.imageWrapper}>
                         <Image
-                            source={require('../assets/Spin&Coin.png')}
+                            source={require('../assets/Spin&Reward.png')}
                             style={styles.mainImage}
                             resizeMode="contain"
                         />
@@ -74,37 +73,19 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#E9F1FF',
-        // paddingHorizontal: 20,
-    },
-    header: {
-        width: '100%',
-        height: height * 0.12,
-        backgroundColor: '#1E68FF',
-        // borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
-        justifyContent: 'flex-end',
-        padding: 20,
-    },
-    headerText: {
-        color: 'white',
-        fontSize: width * 0.06,
-        fontWeight: 'bold',
     },
     mainCard: {
         backgroundColor: 'white',
         borderRadius: 20,
-        // width: '100%',
         alignItems: 'center',
         paddingVertical: 25,
         marginLeft: '5%',
         marginRight: '5%',
         marginTop: height * 0.05,
-        // // elevation: 5
     },
     mainImage: {
-        width: width * 0.15,
-        height: width * 0.15,
-        // marginBottom: 10,
+        width: width * 0.25,
+        height: width * 0.25,
     },
     cardTitle: {
         fontSize: width * 0.045,
@@ -143,10 +124,9 @@ const styles = StyleSheet.create({
     },
     imageWrapper: {
         backgroundColor: '#EFF5FF',
-        padding: 16,
+        padding: 10,
         borderRadius: 16,
         alignItems: 'center',
         justifyContent: 'center',
-        // marginBottom: 10,
     },
 });

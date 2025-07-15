@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Dimensions,
     ScrollView,
@@ -8,41 +8,65 @@ import {
 } from 'react-native';
 import Header from './HeaderComponent';
 import SpinBonusCard from './SpinBonusCard';
+import { getDeviceId } from '../utils/getDeviceId';
+import messaging from '@react-native-firebase/messaging';
+import Loading from './Loading';
 
 const { width, height } = Dimensions.get('window');
 
 export default function SpinBonusComponet(props) {
     const { navigation } = props;
+    const [isLoading, setIsLoading] = useState(true);
+    const [spinBonusData, setSpinBonusData] = useState([]);
 
-    const bonusData = [{
-        title: '100 Spin Bonus',
-        subtitle: 'Collect 100 Spin Bonus',
-        dateTime: new Date(),
-    }, {
-        title: '50 Spin Bonus',
-        subtitle: 'Collect 50 Spin Bonus',
-        dateTime: new Date(),
-    }]
+    useEffect(() => {
+        const fetchSpinBonus = async () => {
+            try {
+                setIsLoading(true);
+                const deviceID = getDeviceId();
+                await messaging().requestPermission();
+                const deviceToken = await messaging().getToken();
+                const url = `https://api.aavakar.com/public/user-coin-links?device_token=${deviceToken}&device_id=${deviceID}`;
+                const response = await fetch(url);
+                const data = await response.json();
+                setSpinBonusData(data.coin_links || []);
+                console.log('Ads fetched successfully:', url, data);
+            } catch (error) {
+                console.error('Error fetching ads:', error);
+            }
+            setIsLoading(false);
+        };
 
-    return (
-        <View style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor="#1E68FF" />
+        fetchSpinBonus();
+    }, []);
 
-            <Header title='Spin Bonus' />
-
+    const renderView = () => {
+        return (
             <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
                 <View style={{ marginVertical: 16 }}>
-                    {bonusData.map((item, index) => (
+                    {spinBonusData.map((item, index) => (
                         <SpinBonusCard
                             key={index}
                             title={item.title}
                             subtitle={item.subtitle}
-                            dateTime={item.dateTime}
+                            dateTime={item.date}
                             navigation={navigation}
                         />
                     ))}
                 </View>
             </ScrollView>
+        )
+    }
+    return (
+        <View style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#1E68FF" />
+
+            <Header title='Spin Bonus' />
+            {
+                isLoading ?
+                    <Loading /> :
+                    renderView()
+            }
         </View>
     );
 }

@@ -1,26 +1,20 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
-    Text,
-    View,
-    StyleSheet,
     Dimensions,
+    StyleSheet,
+    Text,
     TouchableOpacity,
+    View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { getDeviceId } from '../utils/getDeviceId';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Header(props) {
     const { title, isHideBack = false } = props;
     const navigation = useNavigation();
-    const [deviceID, setDeviceID] = useState('');
-
-    useEffect(() => {
-        setDeviceID(getDeviceId())
-    }, []);
 
     return (
         <LinearGradient
@@ -30,7 +24,6 @@ export default function Header(props) {
             style={styles.header}
         >
             <View style={styles.row}>
-                <Text>{deviceID}</Text>
                 {
                     isHideBack ?
                         <Text style={styles.headerText}>{title}</Text>

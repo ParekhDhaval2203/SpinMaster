@@ -16,7 +16,7 @@ export default function SpinBonusCard(props) {
             }}>
             <View style={styles.imageWrapper}>
                 <Image
-                    source={require('../assets/Spin&Coin.png')}
+                    source={require('../assets/SpinBonus.png')}
                     style={styles.image}
                     resizeMode="contain"
                 />
@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
         marginRight: 12,
     },
     image: {
-        width: 48,
-        height: 48,
+        width: 55,
+        height: 55,
     },
     textWrapper: {
         flex: 1,
