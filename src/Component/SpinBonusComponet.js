@@ -11,6 +11,7 @@ import SpinBonusCard from './SpinBonusCard';
 import { getDeviceId } from '../utils/getDeviceId';
 import messaging from '@react-native-firebase/messaging';
 import Loading from './Loading';
+import { whiteColor } from '../utils/color';
 
 const { width, height } = Dimensions.get('window');
 
@@ -30,7 +31,6 @@ export default function SpinBonusComponet(props) {
                 const response = await fetch(url);
                 const data = await response.json();
                 setSpinBonusData(data.coin_links || []);
-                console.log('Ads fetched successfully:', url, data);
             } catch (error) {
                 console.error('Error fetching ads:', error);
             }
@@ -42,7 +42,7 @@ export default function SpinBonusComponet(props) {
 
     const renderView = () => {
         return (
-            <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
+            <ScrollView style={{ flex: 1, backgroundColor: whiteColor }}>
                 <View style={{ marginVertical: 16 }}>
                     {spinBonusData.map((item, index) => (
                         <SpinBonusCard

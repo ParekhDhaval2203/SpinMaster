@@ -6,6 +6,7 @@ import {
     Dimensions,
     StatusBar,
 } from 'react-native';
+import { whiteColor } from '../utils/color';
 
 const { width, height } = Dimensions.get('window');
 const NUM_RAYS = 60;
@@ -79,7 +80,7 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 24,
         borderWidth: 2,
-        borderColor: '#fff',
+        borderColor: whiteColor,
         elevation: 10,
         shadowColor: '#000',
         shadowOpacity: 0.2,

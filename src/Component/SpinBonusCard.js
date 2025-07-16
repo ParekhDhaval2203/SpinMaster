@@ -1,6 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import formatDateTime from '../utils/DateTime';
+import { blackColor, imageBackgroundColor, whiteColor } from '../utils/color';
 
 export default function SpinBonusCard(props) {
     const { navigation, title, subtitle, dateTime } = props;
@@ -33,20 +34,20 @@ export default function SpinBonusCard(props) {
 const styles = StyleSheet.create({
     card: {
         flexDirection: 'row',
-        backgroundColor: '#ffffff',
+        backgroundColor: whiteColor,
         borderRadius: 20,
         padding: 14,
         marginHorizontal: 16,
         marginBottom: 12,
         alignItems: 'center',
-        shadowColor: '#000',
+        shadowColor: blackColor,
         shadowOpacity: 0.1,
         shadowOffset: { width: 0, height: 1 },
         shadowRadius: 5,
         elevation: 3,
     },
     imageWrapper: {
-        backgroundColor: '#EFF5FF',
+        backgroundColor: imageBackgroundColor,
         borderTopLeftRadius: 14,
         borderBottomLeftRadius: 14,
         padding: 10,

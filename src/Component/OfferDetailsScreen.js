@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Header from './HeaderComponent';
+import { whiteColor } from '../utils/color';
 
 export default function OfferDetailsScreen(props) {
     const { route } = props;
@@ -25,7 +26,7 @@ export default function OfferDetailsScreen(props) {
             <View style={styles.card}>
                 <View style={styles.imageContainer}>
                     <Image
-                        source={require('../assets/OfferDetails.png')}
+                        source={require('../assets/SpinBonus.png')}
                         style={styles.image}
                     />
                 </View>
@@ -53,7 +54,7 @@ export default function OfferDetailsScreen(props) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#eaf1ff',
+        backgroundColor: whiteColor,
     },
     header: {
         flexDirection: 'row',
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
     },
     buttonText: {
-        color: '#fff',
+        color: whiteColor,
         fontWeight: '600',
         fontSize: 14,
     },
@@ -142,12 +143,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: '60%'
-    },
-    buttonText: {
-        color: 'white',
-        fontWeight: '600',
-        fontSize: 14,
-    },
+    }
 });
 
 
