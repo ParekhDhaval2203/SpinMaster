@@ -27,7 +27,7 @@ export default function CoinLoader() {
         <View style={styles.container}>
             <Animated.View style={[styles.imageWrapper, { transform: [{ rotate: spin }] }]}>
                 <Image
-                    source={require('../assets/Spin&Coin.jpg')} // make sure image is square
+                    source={require('../assets/Spin&Coin.jpg')}
                     style={styles.logo}
                 />
             </Animated.View>

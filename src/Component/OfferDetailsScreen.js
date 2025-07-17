@@ -1,21 +1,34 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    Image, StatusBar,
+    ActivityIndicator,
+    Image,
+    StatusBar,
     StyleSheet,
     Text,
     TouchableOpacity,
     View
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Header from './HeaderComponent';
 import { whiteColor } from '../utils/color';
+import BannerAdService from './BannerAdService';
+import Header from './HeaderComponent';
+import NativeAdComponent from './NativeAdComponent';
 
 export default function OfferDetailsScreen(props) {
     const { route } = props;
     const { title, subtitle, dateTime } = route.params;
 
     const navigation = useNavigation();
+
+    const [imageLoading, setImageLoading] = useState(true);
+
+    useEffect(() => {
+        const source = Image.resolveAssetSource(require('../assets/SpinBonus.png'));
+        Image.prefetch(source.uri)
+            .then(() => setImageLoading(false))
+            .catch(() => setImageLoading(false));
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -25,10 +38,15 @@ export default function OfferDetailsScreen(props) {
 
             <View style={styles.card}>
                 <View style={styles.imageContainer}>
-                    <Image
-                        source={require('../assets/SpinBonus.png')}
-                        style={styles.image}
-                    />
+                    {imageLoading ? (
+                        <ActivityIndicator size="small" color="#999" style={styles.image} />
+                    ) : (
+                        <Image
+                            source={require('../assets/SpinBonus.png')}
+                            style={styles.image}
+                            resizeMode="contain"
+                        />
+                    )}
                 </View>
 
                 <View style={styles.detailsContainer}>
@@ -38,15 +56,16 @@ export default function OfferDetailsScreen(props) {
                     <TouchableOpacity>
                         <LinearGradient
                             colors={['#4facfe', '#1976f2']}
-
                             style={styles.gradientButton}
                         >
                             <Text style={styles.buttonText}>Claim Now</Text>
                         </LinearGradient>
                     </TouchableOpacity>
-
                 </View>
             </View>
+
+            <NativeAdComponent />
+            <BannerAdService />
         </View>
     );
 }
@@ -55,26 +74,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: whiteColor,
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#1976f2',
-        paddingTop: 50,
-        paddingBottom: 20,
-        paddingHorizontal: 16,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
-    },
-    backArrow: {
-        fontSize: 24,
-        color: 'white',
-        marginRight: 10,
-    },
-    headerText: {
-        fontSize: 20,
-        color: 'white',
-        fontWeight: '600',
     },
     card: {
         flexDirection: 'row',
@@ -102,7 +101,6 @@ const styles = StyleSheet.create({
     image: {
         width: 90,
         height: 90,
-        resizeMode: 'contain',
     },
     detailsContainer: {
         flex: 1,
@@ -125,13 +123,6 @@ const styles = StyleSheet.create({
         color: '#888',
         marginBottom: 10,
     },
-    button: {
-        backgroundColor: '#1976f2',
-        paddingVertical: 8,
-        paddingHorizontal: 20,
-        borderRadius: 24,
-        alignSelf: 'flex-start',
-    },
     buttonText: {
         color: whiteColor,
         fontWeight: '600',
@@ -142,8 +133,6 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         alignItems: 'center',
         justifyContent: 'center',
-        width: '60%'
-    }
+        width: '60%',
+    },
 });
-
-

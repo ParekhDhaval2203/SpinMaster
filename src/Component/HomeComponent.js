@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Dimensions,
     Image,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View,
+    ActivityIndicator
 } from 'react-native';
+import {
+    BannerAd, BannerAdSize,
+    TestIds
+} from 'react-native-google-mobile-ads';
 import Toast from 'react-native-toast-message';
 import Feather from 'react-native-vector-icons/Feather';
 import { iconBackgroundColor, imageBackgroundColor, textColor, whiteColor } from '../utils/color';
@@ -20,6 +25,17 @@ const { width, height } = Dimensions.get('window');
 
 export default function HomeComponent(props) {
     const { navigation } = props;
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        // Preload local image
+        const source = Image.resolveAssetSource(require('../assets/Spin&Reward.png'));
+        Image.prefetch(source.uri).then(() => {
+            setLoading(false);
+        }).catch(() => {
+            setLoading(false); // Fail-safe
+        });
+    }, []);
 
     const onPress = () => {
         if (RewardedAdService.getLoaded()) {
@@ -36,19 +52,26 @@ export default function HomeComponent(props) {
         <>
             <View style={styles.container}>
                 <Toast />
+
                 <Header title='Coin Master' isHideBack />
 
+                {/* Main Card */}
                 <TouchableOpacity style={styles.mainCard} onPress={onPress}>
                     <View style={styles.imageWrapper}>
-                        <Image
-                            source={require('../assets/Spin&Reward.png')}
-                            style={styles.mainImage}
-                            resizeMode="contain"
-                        />
+                        {loading ? (
+                            <ActivityIndicator size="small" color="#999" style={styles.mainImage} />
+                        ) : (
+                            <Image
+                                source={require('../assets/Spin&Reward.png')}
+                                style={styles.mainImage}
+                                resizeMode="contain"
+                            />
+                        )}
                     </View>
                     <Text style={styles.cardTitle}>Spin & Coin Reward</Text>
                 </TouchableOpacity>
 
+                {/* Bottom Buttons */}
                 <View style={styles.buttonRow}>
                     <TouchableOpacity style={styles.cardButton}>
                         <View style={styles.iconWrapper}>
@@ -68,6 +91,7 @@ export default function HomeComponent(props) {
                 <NativeAdComponent />
                 <BannerAdService />
             </View>
+
             <BannerAdService />
         </>
     );
@@ -83,7 +107,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         alignItems: 'center',
         paddingVertical: 25,
-        marginHorizontal: '5%',
+        marginLeft: '5%',
+        marginRight: '5%',
         marginTop: height * 0.05,
     },
     mainImage: {

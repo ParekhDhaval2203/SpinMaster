@@ -1,20 +1,38 @@
-import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+    Image,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    ActivityIndicator
+} from 'react-native';
 import formatDateTime from '../utils/DateTime';
 import { blackColor, imageBackgroundColor, whiteColor } from '../utils/color';
 
 export default function SpinBonusCard(props) {
     const { title, subtitle, dateTime, onPress } = props;
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const source = Image.resolveAssetSource(require('../assets/SpinBonus.png'));
+        Image.prefetch(source.uri)
+            .then(() => setLoading(false))
+            .catch(() => setLoading(false));
+    }, []);
 
     return (
-        <TouchableOpacity style={styles.card}
-            onPress={onPress}>
+        <TouchableOpacity style={styles.card} onPress={onPress}>
             <View style={styles.imageWrapper}>
-                <Image
-                    source={require('../assets/SpinBonus.png')}
-                    style={styles.image}
-                    resizeMode="contain"
-                />
+                {loading ? (
+                    <ActivityIndicator size="small" color="#999" style={styles.image} />
+                ) : (
+                    <Image
+                        source={require('../assets/SpinBonus.png')}
+                        style={styles.image}
+                        resizeMode="contain"
+                    />
+                )}
             </View>
             <View style={styles.textWrapper}>
                 <Text style={styles.title}>{title}</Text>

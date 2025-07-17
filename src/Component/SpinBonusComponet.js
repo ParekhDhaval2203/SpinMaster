@@ -15,6 +15,7 @@ import Loading from './Loading';
 import RewardedAdService from './RewardedAdService';
 import SpinBonusCard from './SpinBonusCard';
 import ToastServices from './ToastServices';
+import BannerAdService from './BannerAdService';
 
 const { width, height } = Dimensions.get('window');
 
@@ -44,11 +45,12 @@ export default function SpinBonusComponet(props) {
     }, []);
 
     const onPress = (item) => {
+        console.log('Spin Bonus Card Pressed:', item);
         if (RewardedAdService.getLoaded()) {
             navigation.navigate('OfferDetails', {
                 title: item.title,
                 subtitle: item.subtitle,
-                dateTime: formatDateTime(item.dateTime)
+                dateTime: formatDateTime(item.date)
             });
             RewardedAdService.show();
             setTimeout(() => RewardedAdService.load(), 1000);
@@ -85,6 +87,7 @@ export default function SpinBonusComponet(props) {
                     <Loading /> :
                     renderView()
             }
+            <BannerAdService />
         </View>
     );
 }

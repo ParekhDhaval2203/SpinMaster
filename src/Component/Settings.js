@@ -10,7 +10,9 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AppRatingModal from './AppRatingModal';
+import BannerAdService from './BannerAdService';
 import Header from './HeaderComponent';
+import NativeAdComponent from './NativeAdComponent';
 
 export default function SettingScreen() {
     const [showModal, setShowModal] = useState(false);
@@ -67,6 +69,8 @@ export default function SettingScreen() {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ padding: 16 }}
             />
+            <NativeAdComponent />
+            <BannerAdService />
             <AppRatingModal visible={showModal} onClose={() => setShowModal(false)} />
         </View>
     );
