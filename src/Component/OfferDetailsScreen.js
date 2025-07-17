@@ -53,7 +53,7 @@ export default function OfferDetailsScreen(props) {
                     <Text style={styles.title}>{title}</Text>
                     <Text style={styles.subtitle}>{subtitle}</Text>
                     <Text style={styles.time}>{dateTime}</Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7}>
                         <LinearGradient
                             colors={['#4facfe', '#1976f2']}
                             style={styles.gradientButton}
@@ -66,7 +66,7 @@ export default function OfferDetailsScreen(props) {
 
             <NativeAdComponent />
             <BannerAdService />
-        </View>
+        </View >
     );
 }
 

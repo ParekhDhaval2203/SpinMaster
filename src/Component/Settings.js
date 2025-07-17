@@ -49,7 +49,7 @@ export default function SettingScreen() {
             item.iconLib === 'Ionicons' ? Ionicons : MaterialIcons;
 
         return (
-            <TouchableOpacity style={styles.card} onPress={item.onClick}>
+            <TouchableOpacity style={styles.card} onPress={item.onClick} activeOpacity={0.7}>
                 <View style={styles.iconWrapper} >
                     <IconComponent name={item.icon} size={24} color="#1976f2" />
                 </View>

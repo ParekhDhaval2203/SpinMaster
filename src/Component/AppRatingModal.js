@@ -33,7 +33,7 @@ const AppRatingModal = ({ visible, onClose }) => {
                     <Divider />
                     <View style={styles.stars}>
                         {[1, 2, 3, 4, 5].map((val) => (
-                            <TouchableOpacity key={val} onPress={() => handleRate(val)}>
+                            <TouchableOpacity key={val} onPress={() => handleRate(val)} activeOpacity={0.7}>
                                 <Icon
                                     name="star"
                                     size={32}
@@ -45,7 +45,7 @@ const AppRatingModal = ({ visible, onClose }) => {
                     </View>
                     <Divider />
 
-                    <TouchableOpacity onPress={onClose}>
+                    <TouchableOpacity onPress={onClose} activeOpacity={0.7}>
                         <Text style={styles.notNow}>Not Now</Text>
                     </TouchableOpacity>
                 </View>

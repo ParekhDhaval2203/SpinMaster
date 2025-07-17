@@ -1,56 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
-    View,
+    Animated,
+    Easing,
     Image,
-    StyleSheet,
-    Dimensions,
     StatusBar,
+    StyleSheet,
+    View
 } from 'react-native';
 import { whiteColor } from '../utils/color';
 
-const { width, height } = Dimensions.get('window');
-const NUM_RAYS = 60;
-
 export default function SplashScreen({ navigation }) {
+    const scaleValue = useRef(new Animated.Value(0)).current;
+
     useEffect(() => {
+        Animated.timing(scaleValue, {
+            toValue: 1,
+            duration: 1000,
+            easing: Easing.out(Easing.exp),
+            useNativeDriver: true,
+        }).start();
+
         const timer = setTimeout(() => {
             navigation.navigate('Home');
         }, 3000);
-        return () => clearTimeout(timer);
-    }, [navigation]);
 
-    const renderRays = () => {
-        const rays = [];
-        for (let i = 0; i < NUM_RAYS; i++) {
-            const rotate = (360 / NUM_RAYS) * i;
-            rays.push(
-                <View
-                    key={i}
-                    style={[
-                        styles.ray,
-                        {
-                            transform: [
-                                { rotate: `${rotate}deg` },
-                                { translateY: -height * 0.25 },
-                            ],
-                        },
-                    ]}
-                />
-            );
-        }
-        return rays;
-    };
+        return () => clearTimeout(timer);
+    }, [navigation, scaleValue]);
 
     return (
         <View style={styles.container}>
-            <View style={styles.raysContainer}>{renderRays()}</View>
+            <StatusBar translucent backgroundColor="transparent" />
+            <Image
+                source={require('../assets/vector_lines.png')}
+                style={{ position: 'absolute' }}
+            />
 
-            <View style={styles.logoCard}>
+            <Animated.View style={[styles.logoCard, { transform: [{ scale: scaleValue }] }]}>
                 <Image
                     source={require('../assets/Spin&Coin.jpg')}
                     style={styles.logo}
                 />
-            </View>
+            </Animated.View>
         </View>
     );
 }
@@ -61,19 +51,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#2189ff',
         alignItems: 'center',
         justifyContent: 'center',
-    },
-    raysContainer: {
-        ...StyleSheet.absoluteFillObject,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    ray: {
-        position: 'absolute',
-        width: 2,
-        height: height * 0.5,
-        backgroundColor: 'rgba(255,255,255,0.3)',
-        borderRadius: 2,
-        transform: [{ scaleX: 1 }],
     },
     logoCard: {
         backgroundColor: 'white',

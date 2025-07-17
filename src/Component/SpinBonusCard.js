@@ -22,7 +22,7 @@ export default function SpinBonusCard(props) {
     }, []);
 
     return (
-        <TouchableOpacity style={styles.card} onPress={onPress}>
+        <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
             <View style={styles.imageWrapper}>
                 {loading ? (
                     <ActivityIndicator size="small" color="#999" style={styles.image} />

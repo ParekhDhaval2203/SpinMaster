@@ -56,7 +56,7 @@ export default function HomeComponent(props) {
                 <Header title='Coin Master' isHideBack />
 
                 {/* Main Card */}
-                <TouchableOpacity style={styles.mainCard} onPress={onPress}>
+                <TouchableOpacity style={styles.mainCard} onPress={onPress} activeOpacity={0.7}>
                     <View style={styles.imageWrapper}>
                         {loading ? (
                             <ActivityIndicator size="small" color="#999" style={styles.mainImage} />
@@ -73,14 +73,14 @@ export default function HomeComponent(props) {
 
                 {/* Bottom Buttons */}
                 <View style={styles.buttonRow}>
-                    <TouchableOpacity style={styles.cardButton}>
+                    <TouchableOpacity style={styles.cardButton} activeOpacity={0.7}>
                         <View style={styles.iconWrapper}>
                             <Feather name="user-plus" size={24} color={whiteColor} />
                         </View>
                         <Text style={styles.buttonText}>Invite Friends</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('Settings')}>
+                    <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('Settings')} activeOpacity={0.7}>
                         <View style={styles.iconWrapper}>
                             <Feather name="settings" size={24} color={whiteColor} />
                         </View>

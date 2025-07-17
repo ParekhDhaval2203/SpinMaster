@@ -28,7 +28,7 @@ export default function Header(props) {
                     isHideBack ?
                         <Text style={styles.headerText}>{title}</Text>
                         :
-                        <TouchableOpacity style={styles.backRow} onPress={() => navigation.goBack()}>
+                        <TouchableOpacity style={styles.backRow} onPress={() => navigation.goBack()} activeOpacity={0.7}>
                             <Ionicons name="arrow-back" size={24} color="#fff" />
                             <Text style={styles.headerText}>{title}</Text>
                         </TouchableOpacity>
