@@ -1,0 +1,1 @@
+export const rewardedAdKeywords = ['stockmarket', 'investment', 'trading', 'finance'];

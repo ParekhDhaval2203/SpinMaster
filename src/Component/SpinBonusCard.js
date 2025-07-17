@@ -4,17 +4,11 @@ import formatDateTime from '../utils/DateTime';
 import { blackColor, imageBackgroundColor, whiteColor } from '../utils/color';
 
 export default function SpinBonusCard(props) {
-    const { navigation, title, subtitle, dateTime } = props;
+    const { title, subtitle, dateTime, onPress } = props;
 
     return (
         <TouchableOpacity style={styles.card}
-            onPress={() => {
-                navigation.navigate('OfferDetails', {
-                    title: title,
-                    subtitle: subtitle,
-                    dateTime: formatDateTime(dateTime)
-                })
-            }}>
+            onPress={onPress}>
             <View style={styles.imageWrapper}>
                 <Image
                     source={require('../assets/SpinBonus.png')}

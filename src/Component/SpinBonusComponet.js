@@ -1,3 +1,4 @@
+import messaging from '@react-native-firebase/messaging';
 import React, { useEffect, useState } from 'react';
 import {
     Dimensions,
@@ -6,12 +7,14 @@ import {
     StyleSheet,
     View
 } from 'react-native';
-import Header from './HeaderComponent';
-import SpinBonusCard from './SpinBonusCard';
-import { getDeviceId } from '../utils/getDeviceId';
-import messaging from '@react-native-firebase/messaging';
-import Loading from './Loading';
 import { whiteColor } from '../utils/color';
+import formatDateTime from '../utils/DateTime';
+import { getDeviceId } from '../utils/getDeviceId';
+import Header from './HeaderComponent';
+import Loading from './Loading';
+import RewardedAdService from './RewardedAdService';
+import SpinBonusCard from './SpinBonusCard';
+import ToastServices from './ToastServices';
 
 const { width, height } = Dimensions.get('window');
 
@@ -40,6 +43,21 @@ export default function SpinBonusComponet(props) {
         fetchSpinBonus();
     }, []);
 
+    const onPress = (item) => {
+        if (RewardedAdService.getLoaded()) {
+            navigation.navigate('OfferDetails', {
+                title: item.title,
+                subtitle: item.subtitle,
+                dateTime: formatDateTime(item.dateTime)
+            });
+            RewardedAdService.show();
+            setTimeout(() => RewardedAdService.load(), 1000);
+        } else {
+            ToastServices.showToast('Rewarded ad is not loaded yet.', ToastServices.ToastTypes.INFO);
+            RewardedAdService.load();
+        }
+    }
+
     const renderView = () => {
         return (
             <ScrollView style={{ flex: 1, backgroundColor: whiteColor }}>
@@ -50,7 +68,7 @@ export default function SpinBonusComponet(props) {
                             title={item.title}
                             subtitle={item.subtitle}
                             dateTime={item.date}
-                            navigation={navigation}
+                            onPress={() => onPress(item)}
                         />
                     ))}
                 </View>

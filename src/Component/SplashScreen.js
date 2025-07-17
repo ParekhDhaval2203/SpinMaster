@@ -47,7 +47,7 @@ export default function SplashScreen({ navigation }) {
 
             <View style={styles.logoCard}>
                 <Image
-                    source={require('../assets/Spin&Coin.jpg')} // <-- Replace with your image
+                    source={require('../assets/Spin&Coin.jpg')}
                     style={styles.logo}
                 />
             </View>
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
         height: height * 0.5,
         backgroundColor: 'rgba(255,255,255,0.3)',
         borderRadius: 2,
-        transform: [{ scaleX: 1 }], // You can scale X here if you want taper
+        transform: [{ scaleX: 1 }],
     },
     logoCard: {
         backgroundColor: 'white',
