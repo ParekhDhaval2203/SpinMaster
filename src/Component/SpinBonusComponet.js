@@ -47,11 +47,7 @@ export default function SpinBonusComponet(props) {
     const onPress = (item) => {
         console.log('Spin Bonus Card Pressed:', item);
         if (RewardedAdService.getLoaded()) {
-            navigation.navigate('OfferDetails', {
-                title: item.title,
-                subtitle: item.subtitle,
-                dateTime: formatDateTime(item.date)
-            });
+            navigation.navigate('OfferDetails', { item: item });
             RewardedAdService.show();
             setTimeout(() => RewardedAdService.load(), 1000);
         } else {

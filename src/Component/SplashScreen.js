@@ -21,7 +21,7 @@ export default function SplashScreen({ navigation }) {
         }).start();
 
         const timer = setTimeout(() => {
-            navigation.navigate('Home');
+            navigation.replace('Home');
         }, 3000);
 
         return () => clearTimeout(timer);

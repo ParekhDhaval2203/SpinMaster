@@ -15,7 +15,7 @@ export default function SpinBonusCard(props) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const source = Image.resolveAssetSource(require('../assets/SpinBonus.png'));
+        const source = Image.resolveAssetSource(require('../assets/Spin&Coin.png'));
         Image.prefetch(source.uri)
             .then(() => setLoading(false))
             .catch(() => setLoading(false));
@@ -28,7 +28,7 @@ export default function SpinBonusCard(props) {
                     <ActivityIndicator size="small" color="#999" style={styles.image} />
                 ) : (
                     <Image
-                        source={require('../assets/SpinBonus.png')}
+                        source={require('../assets/Spin&Coin.png')}
                         style={styles.image}
                         resizeMode="contain"
                     />

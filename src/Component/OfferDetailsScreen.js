@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import {
     ActivityIndicator,
     Image,
+    Linking,
     StatusBar,
     StyleSheet,
     Text,
@@ -11,38 +12,72 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { whiteColor } from '../utils/color';
+import formatDateTime from '../utils/DateTime';
 import BannerAdService from './BannerAdService';
 import Header from './HeaderComponent';
 import NativeAdComponent from './NativeAdComponent';
+import ToastServices from './ToastServices';
+import Toast from 'react-native-toast-message';
 
 export default function OfferDetailsScreen(props) {
-    const { route } = props;
-    const { title, subtitle, dateTime } = route.params;
+    const {
+        route: {
+            params: {
+                item: { title, subtitle, date, link }
+            }
+        }
+    } = props;
 
     const navigation = useNavigation();
 
     const [imageLoading, setImageLoading] = useState(true);
 
     useEffect(() => {
-        const source = Image.resolveAssetSource(require('../assets/SpinBonus.png'));
+        const source = Image.resolveAssetSource(require('../assets/OfferDetails.png'));
         Image.prefetch(source.uri)
             .then(() => setImageLoading(false))
             .catch(() => setImageLoading(false));
     }, []);
 
+    const onClaimNowPress = async () => {
+        const fallbackUrl = 'https://play.google.com/store/apps/details?id=com.moonactive.coinmaster';
+
+        try {
+            const supported = await Linking.canOpenURL(link);
+            console.log("🚀 ~ onClaimNowPress ~ supported:", link, supported)
+
+            if (supported) {
+                await Linking.openURL(link);
+            } else {
+                ToastServices.showToast(
+                    'Coin Master app is not installed on your device.',
+                    ToastServices.ToastTypes.ERROR
+                );
+                await Linking.openURL(fallbackUrl);
+            }
+        } catch (error) {
+            ToastServices.showToast(
+                'Something went wrong trying to open the app.',
+                ToastServices.ToastTypes.ERROR
+            );
+            await Linking.openURL(fallbackUrl);
+        }
+    };
+
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#1E68FF" />
 
+            <Toast />
             <Header title='Offer Details' />
-
             <View style={styles.card}>
                 <View style={styles.imageContainer}>
                     {imageLoading ? (
                         <ActivityIndicator size="small" color="#999" style={styles.image} />
                     ) : (
                         <Image
-                            source={require('../assets/SpinBonus.png')}
+                            source={require('../assets/OfferDetails.png')}
                             style={styles.image}
                             resizeMode="contain"
                         />
@@ -52,8 +87,8 @@ export default function OfferDetailsScreen(props) {
                 <View style={styles.detailsContainer}>
                     <Text style={styles.title}>{title}</Text>
                     <Text style={styles.subtitle}>{subtitle}</Text>
-                    <Text style={styles.time}>{dateTime}</Text>
-                    <TouchableOpacity activeOpacity={0.7}>
+                    <Text style={styles.time}>{formatDateTime(date)}</Text>
+                    <TouchableOpacity activeOpacity={0.7} onPress={() => onClaimNowPress()}>
                         <LinearGradient
                             colors={['#4facfe', '#1976f2']}
                             style={styles.gradientButton}

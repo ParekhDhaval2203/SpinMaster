@@ -14,6 +14,7 @@ import {
 } from 'react-native-google-mobile-ads';
 import Toast from 'react-native-toast-message';
 import Feather from 'react-native-vector-icons/Feather';
+import analytics from '@react-native-firebase/analytics'; // ✅ Analytics import
 import { iconBackgroundColor, imageBackgroundColor, textColor, whiteColor } from '../utils/color';
 import Header from './HeaderComponent';
 import NativeAdComponent from './NativeAdComponent';
@@ -28,16 +29,22 @@ export default function HomeComponent(props) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Preload local image
-        const source = Image.resolveAssetSource(require('../assets/Spin&Reward.png'));
-        Image.prefetch(source.uri).then(() => {
-            setLoading(false);
-        }).catch(() => {
-            setLoading(false); // Fail-safe
+        const source = Image.resolveAssetSource(require('../assets/Spin&Coin.png'));
+        Image.prefetch(source.uri)
+            .then(() => setLoading(false))
+            .catch(() => setLoading(false));
+
+        analytics().logScreenView({
+            screen_name: 'HomeScreen',
+            screen_class: 'HomeComponent',
         });
     }, []);
 
     const onPress = () => {
+        analytics().logEvent('Home_Spin_Coin_Pressed').then(() => {
+            console.log('Event logged');
+        });
+
         if (RewardedAdService.getLoaded()) {
             navigation.navigate('SpinBonus');
             RewardedAdService.show();
@@ -62,7 +69,7 @@ export default function HomeComponent(props) {
                             <ActivityIndicator size="small" color="#999" style={styles.mainImage} />
                         ) : (
                             <Image
-                                source={require('../assets/Spin&Reward.png')}
+                                source={require('../assets/Spin&Coin.png')}
                                 style={styles.mainImage}
                                 resizeMode="contain"
                             />
@@ -73,14 +80,27 @@ export default function HomeComponent(props) {
 
                 {/* Bottom Buttons */}
                 <View style={styles.buttonRow}>
-                    <TouchableOpacity style={styles.cardButton} activeOpacity={0.7}>
+                    <TouchableOpacity
+                        style={styles.cardButton}
+                        activeOpacity={0.7}
+                        onPress={() => {
+                            analytics().logEvent('invite_friends_clicked'); // ✅ Log event
+                        }}
+                    >
                         <View style={styles.iconWrapper}>
                             <Feather name="user-plus" size={24} color={whiteColor} />
                         </View>
                         <Text style={styles.buttonText}>Invite Friends</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('Settings')} activeOpacity={0.7}>
+                    <TouchableOpacity
+                        style={styles.cardButton}
+                        onPress={() => {
+                            analytics().logEvent('settings_clicked');
+                            navigation.navigate('Settings');
+                        }}
+                        activeOpacity={0.7}
+                    >
                         <View style={styles.iconWrapper}>
                             <Feather name="settings" size={24} color={whiteColor} />
                         </View>
