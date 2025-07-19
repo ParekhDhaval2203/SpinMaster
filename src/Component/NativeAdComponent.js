@@ -1,17 +1,17 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import {
-    View,
-    Text,
-    StyleSheet,
     ActivityIndicator,
     Dimensions,
+    StyleSheet,
+    Text,
+    View,
 } from 'react-native';
 import {
-    NativeAdView,
     NativeAd,
+    NativeAdView,
     NativeAsset,
-    NativeAssetType,
-    TestIds,
+    NativeAssetType
 } from 'react-native-google-mobile-ads';
 import { titleColor, whiteColor } from '../utils/color';
 
@@ -21,9 +21,22 @@ const NativeAdComponent = () => {
     const [nativeAd, setNativeAd] = useState(null);
 
     useEffect(() => {
-        NativeAd.createForAdRequest(TestIds.NATIVE)
-            .then(setNativeAd)
-            .catch(console.error);
+        const loadNativeAd = async () => {
+            try {
+                const adUnitId = await AsyncStorage.getItem('nativeAdID');
+
+                if (adUnitId) {
+                    const ad = await NativeAd.createForAdRequest(adUnitId);
+                    setNativeAd(ad);
+                } else {
+                    console.warn('⚠️ No nativeAdID found in AsyncStorage.');
+                }
+            } catch (error) {
+                console.error('❌ Error loading native ad:', error);
+            }
+        };
+
+        loadNativeAd();
     }, []);
 
     if (!nativeAd) {
@@ -71,6 +84,7 @@ const styles = StyleSheet.create({
         height: 100,
         justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 12, // ✅ Fixed typo: borderRadious ➝ borderRadius
     },
     content: {
         flexDirection: 'column',

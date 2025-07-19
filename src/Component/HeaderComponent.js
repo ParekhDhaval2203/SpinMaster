@@ -9,11 +9,12 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { whiteColor } from '../utils/color';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Header(props) {
-    const { title, isHideBack = false } = props;
+    const { title, isHideBack = false, isFromSpinBonus = false } = props;
     const navigation = useNavigation();
 
     return (
@@ -33,6 +34,13 @@ export default function Header(props) {
                             <Text style={styles.headerText}>{title}</Text>
                         </TouchableOpacity>
                 }
+                {
+                    isFromSpinBonus ?
+                        <TouchableOpacity activeOpacity={0.7} style={{ marginLeft: 'auto' }}>
+                            <Ionicons name="search" size={24} color={whiteColor} />
+                        </TouchableOpacity>
+                        : null
+                }
             </View>
         </LinearGradient>
     );
@@ -42,7 +50,6 @@ const styles = StyleSheet.create({
     header: {
         width: '100%',
         height: height * 0.12,
-        borderBottomRightRadius: 30,
         justifyContent: 'flex-end',
         padding: 20,
     },

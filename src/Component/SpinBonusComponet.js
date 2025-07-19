@@ -1,25 +1,28 @@
 import messaging from '@react-native-firebase/messaging';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
     Dimensions,
-    ScrollView,
+    FlatList,
     StatusBar,
     StyleSheet,
     View
 } from 'react-native';
 import { whiteColor } from '../utils/color';
-import formatDateTime from '../utils/DateTime';
 import { getDeviceId } from '../utils/getDeviceId';
+import BannerAdService from './BannerAdService';
 import Header from './HeaderComponent';
 import Loading from './Loading';
+import NativeAdComponent from './NativeAdComponent';
 import RewardedAdService from './RewardedAdService';
 import SpinBonusCard from './SpinBonusCard';
 import ToastServices from './ToastServices';
-import BannerAdService from './BannerAdService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+import NoDataFound from './NoDataFound';
 
 const { width, height } = Dimensions.get('window');
 
-export default function SpinBonusComponet(props) {
+export default function SpinBonusComponent(props) {
     const { navigation } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [spinBonusData, setSpinBonusData] = useState([]);
@@ -35,6 +38,7 @@ export default function SpinBonusComponet(props) {
                 const response = await fetch(url);
                 const data = await response.json();
                 setSpinBonusData(data.coin_links || []);
+                AsyncStorage.setItem('user_id', data.user_id.toString());
             } catch (error) {
                 console.error('Error fetching ads:', error);
             }
@@ -42,47 +46,68 @@ export default function SpinBonusComponet(props) {
         };
 
         fetchSpinBonus();
-    }, []);
+        setTimeout(() => RewardedAdService.load(), 1000);
+    }, [props, navigation]);
 
     const onPress = (item) => {
-        console.log('Spin Bonus Card Pressed:', item);
-        if (RewardedAdService.getLoaded()) {
-            navigation.navigate('OfferDetails', { item: item });
-            RewardedAdService.show();
-            setTimeout(() => RewardedAdService.load(), 1000);
+        if (item.linkDiabled) {
+            ToastServices.showToast('This link is currently disabled.', ToastServices.ToastTypes.INFO);
         } else {
-            ToastServices.showToast('Rewarded ad is not loaded yet.', ToastServices.ToastTypes.INFO);
-            RewardedAdService.load();
+            if (RewardedAdService.getLoaded()) {
+                navigation.navigate('OfferDetails', { item: item });
+                RewardedAdService.show();
+                setTimeout(() => RewardedAdService.load(), 1000);
+            } else {
+                ToastServices.showToast('Rewarded ad is not loaded yet.', ToastServices.ToastTypes.INFO);
+                RewardedAdService.load();
+            }
         }
-    }
+    };
 
-    const renderView = () => {
+    const flatListData = useMemo(() => {
+        const dataWithAds = [];
+        spinBonusData.forEach((item, index) => {
+            if (index !== 0 && index % 3 === 0) {
+                dataWithAds.push({ type: 'ad' });
+            }
+            dataWithAds.push({ ...item, type: 'bonus' });
+        });
+        return dataWithAds;
+    }, [spinBonusData]);
+
+    const renderItem = ({ item, index }) => {
+        if (item.type === 'ad') {
+            return <NativeAdComponent key={`ad-${index}`} />;
+        }
+
         return (
-            <ScrollView style={{ flex: 1, backgroundColor: whiteColor }}>
-                <View style={{ marginVertical: 16 }}>
-                    {spinBonusData.map((item, index) => (
-                        <SpinBonusCard
-                            key={index}
-                            title={item.title}
-                            subtitle={item.subtitle}
-                            dateTime={item.date}
-                            onPress={() => onPress(item)}
-                        />
-                    ))}
-                </View>
-            </ScrollView>
-        )
-    }
+            <SpinBonusCard
+                index={index}
+                title={item.title}
+                subtitle={item.subtitle}
+                dateTime={item.date}
+                onPress={() => onPress(item)}
+            />
+        );
+    };
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#1E68FF" />
-
-            <Header title='Spin Bonus' />
-            {
-                isLoading ?
-                    <Loading /> :
-                    renderView()
-            }
+            <Header title="Spin Bonus" isFromSpinBonus={true} />
+            <Toast />
+            {isLoading ? (
+                <Loading />
+            ) : spinBonusData.length === 0 ? (
+                <NoDataFound message="No spin bonuses available right now." />
+            ) : (
+                <FlatList
+                    data={flatListData}
+                    keyExtractor={(item, index) => `${item.type}-${item.id || index}`}
+                    renderItem={renderItem}
+                    contentContainerStyle={{ paddingVertical: 16 }}
+                />
+            )}
             <BannerAdService />
         </View>
     );
@@ -92,13 +117,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#E9F1FF',
-        // paddingHorizontal: 20,
     },
     header: {
         width: '100%',
         height: height * 0.12,
         backgroundColor: '#1E68FF',
-        // borderBottomLeftRadius: 30,
         borderBottomRightRadius: 30,
         justifyContent: 'flex-end',
         padding: 20,
@@ -111,18 +134,15 @@ const styles = StyleSheet.create({
     mainCard: {
         backgroundColor: 'white',
         borderRadius: 20,
-        // width: '100%',
         alignItems: 'center',
         paddingVertical: 25,
         marginLeft: '5%',
         marginRight: '5%',
         marginTop: height * 0.05,
-        // // elevation: 5
     },
     mainImage: {
         width: width * 0.15,
         height: width * 0.15,
-        // marginBottom: 10,
     },
     cardTitle: {
         fontSize: width * 0.045,
@@ -134,7 +154,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: height * 0.05,
-        paddingHorizontal: '5%'
+        paddingHorizontal: '5%',
     },
     cardButton: {
         flex: 0.48,
@@ -165,6 +185,5 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         alignItems: 'center',
         justifyContent: 'center',
-        // marginBottom: 10,
     },
 });

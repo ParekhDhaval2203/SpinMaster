@@ -1,26 +1,23 @@
+import analytics from '@react-native-firebase/analytics';
 import React, { useEffect, useState } from 'react';
 import {
+    ActivityIndicator,
     Dimensions,
     Image,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
-    ActivityIndicator
+    View
 } from 'react-native';
-import {
-    BannerAd, BannerAdSize,
-    TestIds
-} from 'react-native-google-mobile-ads';
 import Toast from 'react-native-toast-message';
 import Feather from 'react-native-vector-icons/Feather';
-import analytics from '@react-native-firebase/analytics'; // ✅ Analytics import
 import { iconBackgroundColor, imageBackgroundColor, textColor, whiteColor } from '../utils/color';
+import BannerAdService from './BannerAdService';
 import Header from './HeaderComponent';
 import NativeAdComponent from './NativeAdComponent';
 import RewardedAdService from './RewardedAdService';
 import ToastServices from './ToastServices';
-import BannerAdService from './BannerAdService';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,6 +26,29 @@ export default function HomeComponent(props) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const formData = new FormData();
+        formData.append('package_name', 'Spin_Master_Test');
+
+        fetch('http://panel.aavakar.com/api/getApp', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(async (data) => {
+                console.log('Response:', data.result);
+                const { banner_1, banner_2, banner_3, native_1, reward_1 } = data.result;
+                await Promise.all([
+                    AsyncStorage.setItem('banner_1', banner_1),
+                    // AsyncStorage.setItem('banner_2', banner_2),
+                    // AsyncStorage.setItem('banner_3', banner_3),
+                    AsyncStorage.setItem('nativeAdID', native_1),
+                    AsyncStorage.setItem('rewardAdID', reward_1)
+                ])
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
         const source = Image.resolveAssetSource(require('../assets/Spin&Coin.png'));
         Image.prefetch(source.uri)
             .then(() => setLoading(false))
@@ -38,6 +58,7 @@ export default function HomeComponent(props) {
             screen_name: 'HomeScreen',
             screen_class: 'HomeComponent',
         });
+
     }, []);
 
     const onPress = () => {
@@ -109,10 +130,9 @@ export default function HomeComponent(props) {
                 </View>
 
                 <NativeAdComponent />
+
                 <BannerAdService />
             </View>
-
-            <BannerAdService />
         </>
     );
 }
@@ -129,7 +149,7 @@ const styles = StyleSheet.create({
         paddingVertical: 25,
         marginLeft: '5%',
         marginRight: '5%',
-        marginTop: height * 0.05,
+        marginTop: height * 0.02,
     },
     mainImage: {
         width: width * 0.25,
@@ -144,8 +164,9 @@ const styles = StyleSheet.create({
     buttonRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: height * 0.05,
+        marginTop: height * 0.02,
         paddingHorizontal: '5%',
+        marginBottom: height * 0.03,
     },
     cardButton: {
         flex: 0.48,
@@ -177,4 +198,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    bannerWrapper: {
+        position: 'absolute',
+        bottom: height * 0.05,
+        left: 0,
+        right: 0,
+        backgroundColor: imageBackgroundColor,
+        alignItems: 'center',
+        paddingBottom: 4,
+        zIndex: 999,
+    }
 });

@@ -8,6 +8,7 @@ import SpinBonusComponet from './src/Component/SpinBonusComponet';
 import mobileAds, { MaxAdContentRating } from 'react-native-google-mobile-ads';
 import { useEffect, useState } from 'react';
 import SplashScreen from './src/Component/SplashScreen';
+import NoInternetWrapper from './src/Component/NoInternet';
 // import firebase from '@react-native-firebase/app';
 
 const Stack = createNativeStackNavigator();
@@ -22,6 +23,21 @@ const Stack = createNativeStackNavigator();
 
 function App() {
 	const [adsInitialized, setAdsInitialized] = useState(false);
+	const [isOnline, setIsOnline] = useState(true);
+
+	const checkConnection = (callback) => {
+		const xhr = new XMLHttpRequest();
+		xhr.onload = () => callback(true);
+		xhr.onerror = () => callback(false);
+		xhr.open('GET', 'https://clients3.google.com/generate_204', true);
+		xhr.send();
+	};
+
+	useEffect(() => {
+		checkConnection((isConnected) => {
+			setIsOnline(isConnected);
+		});
+	}, []);
 
 	useEffect(() => {
 		// firebase.initializeApp(firebaseConfig);
@@ -39,25 +55,27 @@ function App() {
 	}, []);
 
 	return (
-		<NavigationContainer>
-			<Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
-				<Stack.Screen name="SplashScreen">
-					{props => <SplashScreen {...props} adsInitialized={adsInitialized} />}
-				</Stack.Screen>
-				<Stack.Screen name="Home">
-					{props => <HomeComponent {...props} adsInitialized={adsInitialized} />}
-				</Stack.Screen>
-				<Stack.Screen name="SpinBonus">
-					{props => <SpinBonusComponet {...props} adsInitialized={adsInitialized} />}
-				</Stack.Screen>
-				<Stack.Screen name="OfferDetails">
-					{props => <OfferDetailsScreen {...props} adsInitialized={adsInitialized} />}
-				</Stack.Screen>
-				<Stack.Screen name="Settings">
-					{props => <SettingScreen {...props} adsInitialized={adsInitialized} />}
-				</Stack.Screen>
-			</Stack.Navigator>
-		</NavigationContainer>
+		<NoInternetWrapper isOnline={isOnline}>
+			<NavigationContainer>
+				<Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
+					<Stack.Screen name="SplashScreen">
+						{props => <SplashScreen {...props} adsInitialized={adsInitialized} />}
+					</Stack.Screen>
+					<Stack.Screen name="Home">
+						{props => <HomeComponent {...props} adsInitialized={adsInitialized} />}
+					</Stack.Screen>
+					<Stack.Screen name="SpinBonus">
+						{props => <SpinBonusComponet {...props} adsInitialized={adsInitialized} />}
+					</Stack.Screen>
+					<Stack.Screen name="OfferDetails">
+						{props => <OfferDetailsScreen {...props} adsInitialized={adsInitialized} />}
+					</Stack.Screen>
+					<Stack.Screen name="Settings">
+						{props => <SettingScreen {...props} adsInitialized={adsInitialized} />}
+					</Stack.Screen>
+				</Stack.Navigator>
+			</NavigationContainer>
+		</NoInternetWrapper>
 	);
 }
 

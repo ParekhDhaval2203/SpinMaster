@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import {
+    ActivityIndicator,
     Image,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View,
-    ActivityIndicator
+    View
 } from 'react-native';
 import formatDateTime from '../utils/DateTime';
 import { blackColor, imageBackgroundColor, whiteColor } from '../utils/color';
 
 export default function SpinBonusCard(props) {
-    const { title, subtitle, dateTime, onPress } = props;
+    const { index, title, subtitle, dateTime, onPress } = props;
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -22,7 +22,7 @@ export default function SpinBonusCard(props) {
     }, []);
 
     return (
-        <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7} key={index}>
             <View style={styles.imageWrapper}>
                 {loading ? (
                     <ActivityIndicator size="small" color="#999" style={styles.image} />
