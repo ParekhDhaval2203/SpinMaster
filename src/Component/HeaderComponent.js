@@ -14,7 +14,7 @@ import { whiteColor } from '../utils/color';
 const { width, height } = Dimensions.get('window');
 
 export default function Header(props) {
-    const { title, isHideBack = false, isFromSpinBonus = false } = props;
+    const { title, isHideBack = false, isFromSpinBonus = false, onPress } = props;
     const navigation = useNavigation();
 
     return (
@@ -29,14 +29,14 @@ export default function Header(props) {
                     isHideBack ?
                         <Text style={styles.headerText}>{title}</Text>
                         :
-                        <TouchableOpacity style={styles.backRow} onPress={() => navigation.goBack()} activeOpacity={0.7}>
+                        <TouchableOpacity style={styles.row} onPress={() => navigation.goBack()} activeOpacity={0.7}>
                             <Ionicons name="arrow-back" size={24} color="#fff" />
                             <Text style={styles.headerText}>{title}</Text>
                         </TouchableOpacity>
                 }
                 {
                     isFromSpinBonus ?
-                        <TouchableOpacity activeOpacity={0.7} style={{ marginLeft: 'auto' }}>
+                        <TouchableOpacity activeOpacity={0.7} style={{ marginLeft: 'auto' }} onPress={onPress}>
                             <Ionicons name="search" size={24} color={whiteColor} />
                         </TouchableOpacity>
                         : null
@@ -57,12 +57,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    backRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
     headerText: {
-        color: 'white',
+        color: whiteColor,
         fontSize: width * 0.06,
         fontWeight: 'bold',
         marginLeft: 6

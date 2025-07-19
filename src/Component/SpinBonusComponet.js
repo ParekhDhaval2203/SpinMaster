@@ -1,31 +1,32 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-    Dimensions,
     FlatList,
     StatusBar,
     StyleSheet,
+    TextInput,
     View
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { whiteColor } from '../utils/color';
 import { getDeviceId } from '../utils/getDeviceId';
 import BannerAdService from './BannerAdService';
 import Header from './HeaderComponent';
 import Loading from './Loading';
 import NativeAdComponent from './NativeAdComponent';
+import NoDataFound from './NoDataFound';
 import RewardedAdService from './RewardedAdService';
 import SpinBonusCard from './SpinBonusCard';
 import ToastServices from './ToastServices';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
-import NoDataFound from './NoDataFound';
-
-const { width, height } = Dimensions.get('window');
 
 export default function SpinBonusComponent(props) {
     const { navigation } = props;
     const [isLoading, setIsLoading] = useState(true);
     const [spinBonusData, setSpinBonusData] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredData, setFilteredData] = useState([]);
+    const [showSearch, setShowSearch] = useState(false);
 
     useEffect(() => {
         const fetchSpinBonus = async () => {
@@ -65,15 +66,16 @@ export default function SpinBonusComponent(props) {
     };
 
     const flatListData = useMemo(() => {
+        const sourceData = filteredData.length > 0 ? filteredData : spinBonusData;
         const dataWithAds = [];
-        spinBonusData.forEach((item, index) => {
+        sourceData.forEach((item, index) => {
             if (index !== 0 && index % 3 === 0) {
                 dataWithAds.push({ type: 'ad' });
             }
             dataWithAds.push({ ...item, type: 'bonus' });
         });
         return dataWithAds;
-    }, [spinBonusData]);
+    }, [spinBonusData, filteredData]);
 
     const renderItem = ({ item, index }) => {
         if (item.type === 'ad') {
@@ -91,14 +93,49 @@ export default function SpinBonusComponent(props) {
         );
     };
 
+    const onSearchPress = () => {
+        setShowSearch(!showSearch);
+        setSearchQuery('');
+        setFilteredData([]);
+    };
+
+    const handleSearch = (text) => {
+        setSearchQuery(text);
+        if (text.trim() === '') {
+            setFilteredData([]);
+            return;
+        }
+
+        const filtered = spinBonusData.filter((item) =>
+            item.title.toLowerCase().includes(text.toLowerCase())
+        );
+        setFilteredData(filtered);
+    };
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#1E68FF" />
-            <Header title="Spin Bonus" isFromSpinBonus={true} />
+            <Header title="Spin Bonus" isFromSpinBonus={true} onPress={onSearchPress} />
             <Toast />
+
+            {showSearch && (
+                <View style={styles.searchContainer}>
+                    <TextInput
+                        placeholder="Search by title"
+                        style={styles.searchInput}
+                        value={searchQuery}
+                        onChangeText={handleSearch}
+                        autoFocus
+                        placeholderTextColor="#888"
+                    />
+                </View>
+            )}
+
             {isLoading ? (
                 <Loading />
-            ) : spinBonusData.length === 0 ? (
+            ) : (filteredData.length === 0 && searchQuery !== '') ? (
+                <NoDataFound message="No matching spin bonuses found." />
+            ) : (spinBonusData.length === 0) ? (
                 <NoDataFound message="No spin bonuses available right now." />
             ) : (
                 <FlatList
@@ -106,6 +143,7 @@ export default function SpinBonusComponent(props) {
                     keyExtractor={(item, index) => `${item.type}-${item.id || index}`}
                     renderItem={renderItem}
                     contentContainerStyle={{ paddingVertical: 16 }}
+                    keyboardShouldPersistTaps="handled"
                 />
             )}
             <BannerAdService />
@@ -118,72 +156,18 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#E9F1FF',
     },
-    header: {
-        width: '100%',
-        height: height * 0.12,
-        backgroundColor: '#1E68FF',
-        borderBottomRightRadius: 30,
-        justifyContent: 'flex-end',
-        padding: 20,
+    searchContainer: {
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        backgroundColor: '#F0F4FF',
     },
-    headerText: {
-        color: 'white',
-        fontSize: width * 0.06,
-        fontWeight: 'bold',
-    },
-    mainCard: {
-        backgroundColor: 'white',
+    searchInput: {
+        backgroundColor: whiteColor,
         borderRadius: 20,
-        alignItems: 'center',
-        paddingVertical: 25,
-        marginLeft: '5%',
-        marginRight: '5%',
-        marginTop: height * 0.05,
-    },
-    mainImage: {
-        width: width * 0.15,
-        height: width * 0.15,
-    },
-    cardTitle: {
-        fontSize: width * 0.045,
-        fontWeight: '600',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        fontSize: 16,
         color: '#333',
-        textAlign: 'center',
-    },
-    buttonRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: height * 0.05,
-        paddingHorizontal: '5%',
-    },
-    cardButton: {
-        flex: 0.48,
-        backgroundColor: 'white',
-        borderRadius: 20,
-        alignItems: 'center',
-        paddingVertical: 16,
-        elevation: 3,
-    },
-    iconWrapper: {
-        backgroundColor: '#1E68FF',
-        width: 50,
-        height: 50,
-        borderRadius: 12,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 8,
-    },
-    buttonText: {
-        fontSize: width * 0.035,
-        color: '#333',
-        fontWeight: '500',
-        textAlign: 'center',
-    },
-    imageWrapper: {
-        backgroundColor: '#EFF5FF',
-        padding: 16,
-        borderRadius: 16,
-        alignItems: 'center',
-        justifyContent: 'center',
+        elevation: 2,
     },
 });
