@@ -116,7 +116,6 @@ export default function SpinBonusComponent(props) {
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#1E68FF" />
             <Header title="Spin Bonus" isFromSpinBonus={true} onPress={onSearchPress} />
-            <Toast />
 
             {showSearch && (
                 <View style={styles.searchContainer}>

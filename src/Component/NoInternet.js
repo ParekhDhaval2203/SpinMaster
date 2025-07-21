@@ -1,15 +1,24 @@
 import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const NoInternetWrapper = ({ children, isOnline }) => {
     if (!isOnline) {
         return (
             <View style={styles.wrapper}>
                 <View style={styles.card}>
-                    <Text style={styles.title}>No Internet Connection</Text>
-                    <Text style={styles.subtitle}>Please check your network settings and try again.</Text>
+                    <MaterialIcons
+                        name="signal-wifi-statusbar-connected-no-internet-4"
+                        size={50}
+                        color="#FF5E5E"
+                        style={styles.icon}
+                    />
+                    <Text style={styles.title}>You're Offline</Text>
+                    <Text style={styles.subtitle}>
+                        It looks like there’s no internet connection. Please check your network and try again.
+                    </Text>
                 </View>
             </View>
         );
@@ -23,13 +32,14 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F2F6FF',
+        backgroundColor: '#FCECED',
         paddingHorizontal: 20,
     },
     card: {
         width: '100%',
+        maxWidth: 400,
         backgroundColor: '#FFFFFF',
-        padding: 24,
+        padding: 30,
         borderRadius: 16,
         alignItems: 'center',
         justifyContent: 'center',
@@ -39,17 +49,21 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
         elevation: 5,
     },
+    icon: {
+        marginBottom: height * 0.02,
+    },
     title: {
         fontSize: width * 0.05,
         fontWeight: 'bold',
-        color: '#1E68FF',
-        marginBottom: 8,
+        color: '#D32F2F',
+        marginBottom: 12,
         textAlign: 'center',
     },
     subtitle: {
-        fontSize: width * 0.04,
+        fontSize: width * 0.042,
         color: '#555',
         textAlign: 'center',
+        lineHeight: 22,
     },
 });
 

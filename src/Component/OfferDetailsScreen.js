@@ -85,7 +85,6 @@ export default function OfferDetailsScreen(props) {
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#1E68FF" />
 
-            <Toast />
             <Header title='Offer Details' />
             <View style={styles.card}>
                 <View style={styles.imageContainer}>

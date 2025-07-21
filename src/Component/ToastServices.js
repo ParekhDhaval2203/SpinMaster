@@ -1,7 +1,7 @@
 import Toast from 'react-native-toast-message';
 
 const DEFAULT_OPTIONS = {
-    position: 'bottom',
+    position: 'top',
     visibilityTime: 3000,
     autoHide: true,
 };

@@ -9,6 +9,9 @@ import mobileAds, { MaxAdContentRating } from 'react-native-google-mobile-ads';
 import { useEffect, useState } from 'react';
 import SplashScreen from './src/Component/SplashScreen';
 import NoInternetWrapper from './src/Component/NoInternet';
+import MaintenancePopup from './src/Component/MaintenancePopup';
+import Toast from 'react-native-toast-message';
+import ToastServices from './src/Component/ToastServices';
 // import firebase from '@react-native-firebase/app';
 
 const Stack = createNativeStackNavigator();
@@ -24,6 +27,7 @@ const Stack = createNativeStackNavigator();
 function App() {
 	const [adsInitialized, setAdsInitialized] = useState(false);
 	const [isOnline, setIsOnline] = useState(true);
+	const [maintenance, setMaintenance] = useState(false);
 
 	const checkConnection = (callback) => {
 		const xhr = new XMLHttpRequest();
@@ -34,10 +38,15 @@ function App() {
 	};
 
 	useEffect(() => {
-		checkConnection((isConnected) => {
-			setIsOnline(isConnected);
-		});
+		const intervalId = setInterval(() => {
+			checkConnection((isConnected) => {
+				setIsOnline(isConnected);
+			});
+		}, 1000);
+
+		return () => clearInterval(intervalId);
 	}, []);
+
 
 	useEffect(() => {
 		// firebase.initializeApp(firebaseConfig);
@@ -55,27 +64,30 @@ function App() {
 	}, []);
 
 	return (
-		<NoInternetWrapper isOnline={isOnline}>
-			<NavigationContainer>
-				<Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
-					<Stack.Screen name="SplashScreen">
-						{props => <SplashScreen {...props} adsInitialized={adsInitialized} />}
-					</Stack.Screen>
-					<Stack.Screen name="Home">
-						{props => <HomeComponent {...props} adsInitialized={adsInitialized} />}
-					</Stack.Screen>
-					<Stack.Screen name="SpinBonus">
-						{props => <SpinBonusComponet {...props} adsInitialized={adsInitialized} />}
-					</Stack.Screen>
-					<Stack.Screen name="OfferDetails">
-						{props => <OfferDetailsScreen {...props} adsInitialized={adsInitialized} />}
-					</Stack.Screen>
-					<Stack.Screen name="Settings">
-						{props => <SettingScreen {...props} adsInitialized={adsInitialized} />}
-					</Stack.Screen>
-				</Stack.Navigator>
-			</NavigationContainer>
-		</NoInternetWrapper>
+		<MaintenancePopup maintenance={maintenance}>
+			<NoInternetWrapper isOnline={isOnline}>
+				<NavigationContainer>
+					<Stack.Navigator initialRouteName="SplashScreen" screenOptions={{ headerShown: false }}>
+						<Stack.Screen name="SplashScreen">
+							{props => <SplashScreen {...props} adsInitialized={adsInitialized} />}
+						</Stack.Screen>
+						<Stack.Screen name="Home">
+							{props => <HomeComponent {...props} adsInitialized={adsInitialized} />}
+						</Stack.Screen>
+						<Stack.Screen name="SpinBonus">
+							{props => <SpinBonusComponet {...props} adsInitialized={adsInitialized} />}
+						</Stack.Screen>
+						<Stack.Screen name="OfferDetails">
+							{props => <OfferDetailsScreen {...props} adsInitialized={adsInitialized} />}
+						</Stack.Screen>
+						<Stack.Screen name="Settings">
+							{props => <SettingScreen {...props} adsInitialized={adsInitialized} />}
+						</Stack.Screen>
+					</Stack.Navigator>
+				</NavigationContainer>
+				<Toast />
+			</NoInternetWrapper>
+		</MaintenancePopup>
 	);
 }
 

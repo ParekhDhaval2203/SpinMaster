@@ -4,20 +4,22 @@ import {
     ActivityIndicator,
     Dimensions,
     Image,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
-    View
+    View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 import Feather from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { iconBackgroundColor, imageBackgroundColor, textColor, whiteColor } from '../utils/color';
 import BannerAdService from './BannerAdService';
 import Header from './HeaderComponent';
 import NativeAdComponent from './NativeAdComponent';
 import RewardedAdService from './RewardedAdService';
 import ToastServices from './ToastServices';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('window');
 
@@ -36,11 +38,9 @@ export default function HomeComponent(props) {
             .then(response => response.json())
             .then(async (data) => {
                 console.log('Response:', data.result);
-                const { banner_1, banner_2, banner_3, native_1, reward_1 } = data.result;
+                const { banner_1, native_1, reward_1 } = data.result;
                 await Promise.all([
                     AsyncStorage.setItem('banner_1', banner_1),
-                    // AsyncStorage.setItem('banner_2', banner_2),
-                    // AsyncStorage.setItem('banner_3', banner_3),
                     AsyncStorage.setItem('nativeAdID', native_1),
                     AsyncStorage.setItem('rewardAdID', reward_1)
                 ])
@@ -77,13 +77,13 @@ export default function HomeComponent(props) {
     };
 
     return (
-        <>
-            <View style={styles.container}>
-                <Toast />
+        <View style={styles.container}>
+            <Header title='Coin Master' isHideBack />
 
-                <Header title='Coin Master' isHideBack />
-
-                {/* Main Card */}
+            <ScrollView
+                contentContainerStyle={{ paddingBottom: 100 }}
+                showsVerticalScrollIndicator={false}
+            >
                 <TouchableOpacity style={styles.mainCard} onPress={onPress} activeOpacity={0.7}>
                     <View style={styles.imageWrapper}>
                         {loading ? (
@@ -99,13 +99,12 @@ export default function HomeComponent(props) {
                     <Text style={styles.cardTitle}>Spin & Coin Reward</Text>
                 </TouchableOpacity>
 
-                {/* Bottom Buttons */}
                 <View style={styles.buttonRow}>
                     <TouchableOpacity
                         style={styles.cardButton}
                         activeOpacity={0.7}
                         onPress={() => {
-                            analytics().logEvent('invite_friends_clicked'); // ✅ Log event
+                            analytics().logEvent('invite_friends_clicked');
                         }}
                     >
                         <View style={styles.iconWrapper}>
@@ -130,10 +129,12 @@ export default function HomeComponent(props) {
                 </View>
 
                 <NativeAdComponent />
+            </ScrollView>
 
+            <View style={styles.bannerWrapper}>
                 <BannerAdService />
             </View>
-        </>
+        </View>
     );
 }
 
@@ -200,12 +201,12 @@ const styles = StyleSheet.create({
     },
     bannerWrapper: {
         position: 'absolute',
-        bottom: height * 0.05,
+        bottom: 0,
         left: 0,
         right: 0,
         backgroundColor: imageBackgroundColor,
         alignItems: 'center',
-        paddingBottom: 4,
+        paddingVertical: 6,
         zIndex: 999,
-    }
+    },
 });
